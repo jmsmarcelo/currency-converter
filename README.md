@@ -25,3 +25,8 @@ Como desafio extra incentivamos vocês a deixar fluir sua criatividade, se posso
 ## Como desafio extra foram adicionados
   - Taxa SELIC
   - Inflação
+
+
+
+https://github.com/jmsmarcelo/currency-converter/assets/32857346/85396ceb-b898-406f-9046-9bb8d60465bb
+
