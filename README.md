@@ -30,3 +30,4 @@ Como desafio extra incentivamos vocês a deixar fluir sua criatividade, se posso
 
 https://github.com/jmsmarcelo/currency-converter/assets/32857346/85396ceb-b898-406f-9046-9bb8d60465bb
 
+![cms_files_10224_1671211937Prancheta_8](https://github.com/jmsmarcelo/currency-converter/assets/32857346/7a7e15ad-b8da-4534-a860-8beabd5b4636)
