@@ -6,7 +6,7 @@ import java.text.DecimalFormat;
 
 public class Converter extends HttpConnect {
 	private BigDecimal currencyValue;
-	
+
 	public String getCurrency(double m, String cT) {
 		this.setCurrency(cT);
 		return "O valor da conversão é de " + getSymbol(cT) + (
@@ -16,7 +16,7 @@ public class Converter extends HttpConnect {
 				toString().replaceAll(",", ".").replaceAll("\\.(\\d{1,})$", ",$1")
 		);
 	}
-	
+
 	private void setCurrency(String cT) {
 		currencyValue = new BigDecimal(
 				super.get("https://brapi.dev/api/v2/currency?currency=" + cT).
