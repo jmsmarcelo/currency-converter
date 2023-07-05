@@ -8,7 +8,6 @@ import com.github.jmsmarcelo.exchange.head.Selic;
 
 public class Swing {
 	private Object[] optMenu = {"Conversor de Moeda", "Taxa Selic", "Inflação"};
-	private String selectedOpt;
 	private double moneyInput;
 	private Object[][] convTypes = {
 			{"De Reais para Dólares",
@@ -24,67 +23,67 @@ public class Swing {
 			{"BRL-USD", "BRL-EUR", "BRL-GBP", "BRL-ARS", "BRL-CLP",
 				"USD-BRL", "EUR-BRL", "GBP-BRL", "ARS-BRL", "CLP-BRL"}
 	};
+	private Object selectedOpt = convTypes[0][5];
 	private Object convType;
-	private Object nextCmd = true;
+	private Boolean nextCmd = true;
+	private Object input;
 	
 	public void get() {
-		nextCmd = true;
-		this.optMenuMain();
-		if(this.selectedOpt == "Conversor de Moeda")
-			this.setValue();
-		else if(this.selectedOpt == "Taxa Selic") {
-			this.getSelic();
-			return;
+		
+		while(nextCmd) {
+			optMenuMain();
+			if(input == null) break;
+			if(input == "Conversor de Moeda") {
+				setValue();
+				if(input == null) continue;
+				setConType();
+				if(input == null) continue;
+				getExchange();
+			}
+			else if(input == "Taxa Selic")
+				getSelic();
+			else if(input == "Inflação")
+				getInflation();
+			if(nextCmd == false) break;
+
 		}
-		else if(this.selectedOpt == "Inflação") {
-			this.getInflation();
-			return;
-		}
-		else return;
-		if(nextCmd != null)
-			this.setConType();
-		else
-			return;
-		if(convType != null)
-			this.getExchange();
-		else return;
 	}
 	
 	private void optMenuMain() {
-		Object menuMain = JOptionPane.showInputDialog(null, "Escolha uma opção",
+		input = JOptionPane.showInputDialog(null, "Escolha uma opção",
 				"Menu Principal", JOptionPane.DEFAULT_OPTION, null, optMenu, null);
-		selectedOpt = menuMain.toString();
+		if(input == null) return;
 	}
 	private void setValue() {
-		Object inValue = JOptionPane.showInputDialog(null, "Insira um valor",
+		input = JOptionPane.showInputDialog(null, "Insira um valor",
 				"Valor a converter", JOptionPane.NO_OPTION);
-		if(inValue != null) {
-			if(((String)inValue).matches("\\d+[\\.|\\,]?\\d*"))
-				moneyInput = Double.parseDouble(((String)inValue).replace(",", "."));
+		if(input == null) return;
+			if(((String)input).matches("\\d+[\\.|\\,]?\\d*"))
+				moneyInput = Double.parseDouble(((String)input).replace(",", "."));
 			else
 				this.valInvalid();
-		} else
-			nextCmd = inValue;
 	}
 	private void valInvalid() {
-		JOptionPane.showMessageDialog(null, "Valor inválido", "Só é permitido números", 0);
+		endInfo("Só é permitido números", "Valor inválido");
 		this.setValue();
 	}
 	private void setConType() {
-		convType = JOptionPane.showInputDialog(null,
+		input = JOptionPane.showInputDialog(null,
 				"Escolha as moedas que você deseja converter",
-				"Moedas", JOptionPane.DEFAULT_OPTION, null, convTypes[0], convTypes[0][5]);
+				"Moedas", JOptionPane.DEFAULT_OPTION, null, convTypes[0], selectedOpt);
+		if(input == null) return;
+		selectedOpt = convType = input;
 	}
 	private String getConvType(Object m) {
 		for(int i = 0; i < convTypes[0].length; i++)
 			if((convTypes[0][i].toString()).matches(m.toString()))
-				return convTypes[1][i].toString();
+				return (String)convTypes[1][i];
 		return null;
 	}
 	private void getExchange() {
 		Converter exchange = new Converter();
 		JOptionPane.showMessageDialog(null, exchange.getCurrency(moneyInput, getConvType(convType)),
-				convType.toString(), 1);
+				(String)convType, 1);
 		this.endDialog();
 	}
 	private void getSelic() {
@@ -100,16 +99,17 @@ public class Swing {
 		this.endDialog();
 	}
 	private void endDialog() {
-		Object endMessage = JOptionPane.showConfirmDialog(
+		input = JOptionPane.showConfirmDialog(
 				null, "Deseja continuar?", "Escolha uma Opção",
 				JOptionPane.YES_NO_CANCEL_OPTION);
 		
-		if((int)endMessage == 0) this.get();
-		else if((int)endMessage == 1) endInfo("Programa finalizado");
-		else endInfo("Programa concluído");
+		if((int)input == 0) this.get();
+		else if((int)input == 1) endInfo("Programa finalizado", "github.com/jmsmarcelo");
+		else endInfo("Programa concluído", "github.com/jmsmarcelo");
+		nextCmd = false;
 	}
-	private void endInfo(String ei) {
+	private void endInfo(String msg, String tt) {
 		JOptionPane.showMessageDialog(
-				null, ei, "github.com/jmsmarcelo", 1);
+				null, msg, tt, 1);
 	}
 }
