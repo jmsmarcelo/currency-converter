@@ -1,5 +1,5 @@
 # Conversor de moeda Challenge ONE Back End
-![currency-converter-print](https://github.com/jmsmarcelo/currency-converter/assets/32857346/bb928775-a107-40d6-8b1a-15ec07a2cd73)
+![currency-converter-print](currency-converter-print.png)
 
 
 
