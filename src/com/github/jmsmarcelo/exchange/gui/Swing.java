@@ -29,7 +29,6 @@ public class Swing {
 	private Object input;
 	
 	public void get() {
-		
 		while(nextCmd) {
 			optMenuMain();
 			if(input == null) break;
@@ -45,18 +44,16 @@ public class Swing {
 			else if(input == "Inflação")
 				getInflation();
 			if(nextCmd == false) break;
-
 		}
 	}
 	
 	private void optMenuMain() {
 		input = JOptionPane.showInputDialog(null, "Escolha uma opção",
-				"Menu Principal", JOptionPane.DEFAULT_OPTION, null, optMenu, null);
+				"Menu Principal", -1, null, optMenu, null);
 		if(input == null) return;
 	}
 	private void setValue() {
-		input = JOptionPane.showInputDialog(null, "Insira um valor",
-				"Valor a converter", JOptionPane.NO_OPTION);
+		input = JOptionPane.showInputDialog(null, "Insira um valor", "Valor a converter", 1);
 		if(input == null) return;
 			if(((String)input).matches("\\d+[\\.|\\,]?\\d*"))
 				moneyInput = Double.parseDouble(((String)input).replace(",", "."));
@@ -68,9 +65,8 @@ public class Swing {
 		this.setValue();
 	}
 	private void setConType() {
-		input = JOptionPane.showInputDialog(null,
-				"Escolha as moedas que você deseja converter",
-				"Moedas", JOptionPane.DEFAULT_OPTION, null, convTypes[0], selectedOpt);
+		input = JOptionPane.showInputDialog(null, "Escolha as moedas que você deseja converter",
+				"Moedas", -1, null, convTypes[0], selectedOpt);
 		if(input == null) return;
 		selectedOpt = convType = input;
 	}
@@ -82,34 +78,40 @@ public class Swing {
 	}
 	private void getExchange() {
 		Converter exchange = new Converter();
-		JOptionPane.showMessageDialog(null, exchange.getCurrency(moneyInput, getConvType(convType)),
-				(String)convType, 1);
+		try {
+			endInfo(exchange.getCurrency(moneyInput, getConvType(convType)), (String)convType);
+		} catch (Exception e) {
+			endInfo("Não foi possível obter os dados!", (String)convType);
+		}
+		
 		this.endDialog();
 	}
 	private void getSelic() {
 		Selic todaySelic = new Selic();
-		JOptionPane.showMessageDialog(
-				null, todaySelic.get(), "Taxa Selic", 1);
+		try {
+			endInfo(todaySelic.get(), "Taxa Selic");
+		} catch (Exception e) {
+			endInfo("Não foi possível obter os dados!", "Taxa Selic");
+		}
 		this.endDialog();
 	}
 	private void getInflation() {
 		Inflation todayInflation = new Inflation();
-		JOptionPane.showMessageDialog(
-				null, todayInflation.get(), "Inflação", 1);
+		try {
+			endInfo(todayInflation.get(), "Inflação");
+		} catch (Exception e) {
+			endInfo("Não foi possível obter os dados!", "Inflação");
+		}
 		this.endDialog();
 	}
 	private void endDialog() {
-		input = JOptionPane.showConfirmDialog(
-				null, "Deseja continuar?", "Escolha uma Opção",
-				JOptionPane.YES_NO_CANCEL_OPTION);
-		
-		if((int)input == 0) this.get();
+		input = JOptionPane.showConfirmDialog(null, "Deseja continuar?", "Escolha uma Opção", 1);
+		if((int)input == 0) return;
 		else if((int)input == 1) endInfo("Programa finalizado", "github.com/jmsmarcelo");
 		else endInfo("Programa concluído", "github.com/jmsmarcelo");
 		nextCmd = false;
 	}
 	private void endInfo(String msg, String tt) {
-		JOptionPane.showMessageDialog(
-				null, msg, tt, 1);
+		JOptionPane.showMessageDialog(null, msg, tt, 1);
 	}
 }
