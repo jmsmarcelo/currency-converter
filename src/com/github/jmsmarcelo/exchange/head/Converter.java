@@ -4,7 +4,6 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.text.DecimalFormat;
 
 public class Converter extends Api {
 	public Converter(String code) {
@@ -16,10 +15,9 @@ public class Converter extends Api {
 	}
 	public String getCurrency(double m) {
 		return getSymbol(super.get("toCurrency")) + (
-				new DecimalFormat("#,###,##0.00").format(
-				Double.parseDouble(new BigDecimal(super.get("askPrice")).
+				new BigDecimal(super.get("bidPrice")).
 						multiply(BigDecimal.valueOf(m)).setScale(2, RoundingMode.CEILING)
-						.toString())).toString().replaceAll(",", ".").replaceAll("\\.(\\d+)$", ",$1")
+						.toString().toString().replaceAll(",", ".").replaceAll("\\.(\\d+)$", ",$1")
 		);
 	}
 	@Override
