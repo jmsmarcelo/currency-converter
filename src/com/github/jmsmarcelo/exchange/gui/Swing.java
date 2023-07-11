@@ -77,28 +77,30 @@ public class Swing {
 		return null;
 	}
 	private void getExchange() {
-		Converter exchange = new Converter();
+		Converter exchange = new Converter(getConvType(convType));
 		try {
-			endInfo(exchange.getCurrency(moneyInput, getConvType(convType)), (String)convType);
+			endInfo("O valor convertido é " +
+					exchange.getCurrency(moneyInput),exchange.get("name"));
 		} catch (Exception e) {
 			endInfo("Não foi possível obter os dados!", (String)convType);
 		}
-		
 		this.endDialog();
 	}
 	private void getSelic() {
-		Selic todaySelic = new Selic();
+		Selic selic = new Selic();
 		try {
-			endInfo(todaySelic.get(), "Taxa Selic");
+			endInfo("O valor está em " + selic.get("value") + "% ao ano",
+					"Taxa Selic, " + selic.get("date"));
 		} catch (Exception e) {
 			endInfo("Não foi possível obter os dados!", "Taxa Selic");
 		}
 		this.endDialog();
 	}
 	private void getInflation() {
-		Inflation todayInflation = new Inflation();
+		Inflation inflation = new Inflation();
 		try {
-			endInfo(todayInflation.get(), "Inflação");
+			endInfo("O valor está em " + inflation.get("value") + "% ao ano",
+					"Inflação, " + inflation.get("date"));
 		} catch (Exception e) {
 			endInfo("Não foi possível obter os dados!", "Inflação");
 		}
