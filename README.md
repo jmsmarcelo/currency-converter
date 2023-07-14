@@ -32,6 +32,7 @@ Como desafio extra incentivamos vocês a deixar fluir sua criatividade, se posso
   - Inflação
 
 ## Todos os Dados são atualizados em tempo real, por uma API
+- Caso não seja possível obter os dados atualizados da API será mostrado dados salvos anteriormente
 
 https://github.com/jmsmarcelo/currency-converter/assets/32857346/85396ceb-b898-406f-9046-9bb8d60465bb
 
