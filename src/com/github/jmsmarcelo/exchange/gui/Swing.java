@@ -77,12 +77,24 @@ public class Swing {
 		return null;
 	}
 	private void getExchange() {
-		Converter exchange = new Converter(getConvType(convType));
+		Converter exchange = new Converter();
 		try {
 			endInfo("O valor convertido é " +
-					exchange.getCurrency(moneyInput),exchange.get("name"));
-		} catch (Exception e) {
-			endInfo("Não foi possível obter os dados!", (String)convType);
+					exchange.getCurrency(getConvType(convType), moneyInput),
+					exchange.get(getConvType(convType), "name"));
+		} catch(Exception e) {
+			try {
+				exchange.setJson("currency.json");
+				endInfo("Não foi possível obter os dados atualizados!" +
+						"\nSerá exibido dados de " +
+						exchange.get(getConvType(convType), "updatedAtDate"),
+						exchange.get(getConvType(convType), "name"));
+				endInfo("O valor convertido é " +
+						exchange.getCurrency(getConvType(convType), moneyInput),
+						exchange.get(getConvType(convType), "name"));
+			} catch(Exception er) {
+				endInfo("Não foi possível obter os dados!", (String)convType);
+			}
 		}
 		this.endDialog();
 	}
@@ -92,7 +104,16 @@ public class Swing {
 			endInfo("O valor está em " + selic.get("value") + "% ao ano",
 					"Taxa Selic, " + selic.get("date"));
 		} catch (Exception e) {
-			endInfo("Não foi possível obter os dados!", "Taxa Selic");
+			try {
+				selic.setJson("prime-rate.json");
+				endInfo("Não foi possível obter os dados atualizados!" +
+				"\nSerá exibido dados anteriores",
+						"Taxa Selic, " + selic.get("date"));
+				endInfo("O valor está em " + selic.get("value") + "% ao ano",
+						"Taxa Selic, " + selic.get("date"));
+			} catch(Exception er) {
+				endInfo("Não foi possível obter os dados!", "Taxa Selic");
+			}
 		}
 		this.endDialog();
 	}
@@ -102,7 +123,16 @@ public class Swing {
 			endInfo("O valor está em " + inflation.get("value") + "% ao ano",
 					"Inflação, " + inflation.get("date"));
 		} catch (Exception e) {
-			endInfo("Não foi possível obter os dados!", "Inflação");
+			try {
+				inflation.setJson("inflation.json");
+				endInfo("Não foi possível obter os dados atualizados!" +
+						"\nSerá exibido dados anteriores",
+						"Inflação, " + inflation.get("date"));
+				endInfo("O valor está em " + inflation.get("value") + "% ao ano",
+						"Inflação, " + inflation.get("date"));
+			} catch(Exception er) {
+				endInfo("Não foi possível obter os dados!", "Inflação");
+			}
 		}
 		this.endDialog();
 	}

@@ -1,9 +1,12 @@
 package com.github.jmsmarcelo.exchange.head;
 
+import java.io.File;
+import java.io.FileWriter;
 import java.net.HttpURLConnection;
 import java.net.URI;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.util.HashMap;
 import java.util.Scanner;
 
 /**
@@ -14,22 +17,10 @@ public class Api {
 	private String json;
 
 	public String get(String code, String lab) {
-		String[] cd = code.split("-");
-		String[][][] arr = jsonToArrMultiMoney();
-		String result = "";
-		for(int i = 0; i < arr.length; i++)
-			for(int j = 0; j < arr[i].length; j++)
-				if(arr[i][0][1].matches(cd[0]) && arr[i][1][1].matches(cd[1]) && arr[i][j][0].matches(lab))
-					return result = arr[i][j][1];
-		return result;
+		return jsonToMultiHashMap().get(code).get(lab);
 	}
 	public String get(String lab) {
-		String[][] arr = jsonToArrSingleMoney();
-		String result = "";
-		for(int i = 0; i < arr.length; i++)
-			if(arr[i][0].matches(lab))
-				return result = arr[i][1];
-		return result;
+		return jsonToSingleHashMap().get(lab);
 	}
 	@SuppressWarnings("resource")
 	public void set(URI uri) {
@@ -46,23 +37,43 @@ public class Api {
 			e.toString();
 		}
 	}
-	private String[][][] jsonToArrMultiMoney() {
-		String[] tempArr = json.replaceAll("^[\\{\".*\":.*\\{\"]|[\"\\}.*\\}]$", "").split("\"\\},.*\\{\"");
-		String[][][] triArr = new String[tempArr.length]
-				[tempArr[0].split("\",\"").length]
-				[tempArr[0].split("\",\"")[0].split("\":\"").length];
-		for(int i = 0; i < tempArr.length; i++)
-			for(int j = 0; j < tempArr[i].split("\",\"").length; j++)
-				triArr[i][j] = tempArr[i].split("\",\"")[j].split("\":\"");
-		return triArr;
+	private HashMap<String, HashMap<String, String>> jsonToMultiHashMap() {
+		String[] tempArr = json.replaceAll("^\\{\".*\":\\[\\{\"|\"\\}\\]\\}$", "").split("\"\\}\\,\\{\"");
+		HashMap<String, HashMap<String, String>> data = new HashMap<String, HashMap<String, String>>();
+		for(String i: tempArr) {
+			HashMap<String, String> subData = new HashMap<String, String>();
+			for(String j: i.split("\",\""))
+				subData.put(j.split("\":\"")[0], j.split("\":\"")[1]);
+			data.put(subData.get("fromCurrency") + "-" + subData.get("toCurrency"), subData);
+		}
+		return data;
 	}
-	private String[][] jsonToArrSingleMoney() {
-		String[] tempArr = json.replaceAll("^\\{\".*\":.*\\{\"|\"\\}.*\\}$", "").split("\",\"");
-		String[][] biArr = new String[tempArr.length]
-				[tempArr[0].split("\":\"").length];
-		for(int i = 0; i < tempArr.length; i++)
-			biArr[i] = tempArr[i].split("\":\"");
-		return biArr;
+	private HashMap<String, String> jsonToSingleHashMap() {
+		String[] tempArr = json.replaceAll("^\\{\".*\":\\[\\{\"|\"?\\}\\]\\}$", "").split("\",\"");
+		HashMap<String, String> data = new HashMap<String, String>();
+		for(String i: tempArr)
+			data.put(i.split("\":\"")[0], i.split("\":\"?")[1]);
+		return data;
+	}
+	
+	protected void setDataFile(String fname) {
+		try {
+			if(this.json != null) {
+				File myObj = new File(fname);
+				FileWriter myObjWriter = new FileWriter(fname);
+				if(!myObj.exists())
+					myObj.createNewFile();
+				myObjWriter.write(this.json);
+				myObjWriter.close();
+			}
+		} catch (Exception e) {}
+	}
+	@SuppressWarnings("resource")
+	protected void setJson(String fname) {
+		File myObj = new File(fname);
+		try {
+			this.json = new Scanner(myObj).nextLine();
+		} catch (Exception e) {}
 	}
 	protected String getDate() {
 		return LocalDate.now().format(DateTimeFormatter.ofPattern("dd/MM/yyyy"));
