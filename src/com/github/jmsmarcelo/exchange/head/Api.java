@@ -59,8 +59,8 @@ public class Api {
 	protected void setDataFile(String fname) {
 		try {
 			if(this.json != null) {
-				File myObj = new File(fname);
-				FileWriter myObjWriter = new FileWriter(fname);
+				File myObj = new File(System.getProperty("java.io.tmpdir") + fname);
+				FileWriter myObjWriter = new FileWriter(System.getProperty("java.io.tmpdir") + fname);
 				if(!myObj.exists())
 					myObj.createNewFile();
 				myObjWriter.write(this.json);
@@ -70,7 +70,7 @@ public class Api {
 	}
 	@SuppressWarnings("resource")
 	protected void setJson(String fname) {
-		File myObj = new File(fname);
+		File myObj = new File(System.getProperty("java.io.tmpdir") + fname);
 		try {
 			this.json = new Scanner(myObj).nextLine();
 		} catch (Exception e) {}
